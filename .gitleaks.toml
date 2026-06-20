@@ -1,0 +1,24 @@
+title = "Gitleaks Config"
+
+[extend]
+useDefault = true
+
+[[rules]]
+id = "aws-access-key"
+description = "AWS Access Key"
+regex = '''AKIA[0-9A-Z]{16}'''
+severity = "CRITICAL"
+
+[[rules]]
+id = "aws-secret-key"
+description = "AWS Secret Key"
+regex = '''(?i)aws_secret_access_key\s*=\s*[^\s]{40}'''
+severity = "CRITICAL"
+
+[allowlist]
+description = "Global allowlist"
+paths = [
+  '''.gitleaks.toml''',
+  '''node_modules''',
+  '''coverage'''
+]
