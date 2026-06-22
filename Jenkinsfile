@@ -49,9 +49,14 @@ pipeline {
 
         stage('Quality Gate') {
             steps {
-                catchError(buildResult: 'SUCCESS', stageResult: 'UNSTABLE') {
-                    timeout(time: 5, unit: 'MINUTES') {
-                        waitForQualityGate abortPipeline: false
+                script {
+                    try {
+                        timeout(time: 2, unit: 'MINUTES') {
+                            waitForQualityGate abortPipeline: false
+                        }
+                    } catch (err) {
+                        echo "Quality Gate check failed: \${err.getMessage()} - continuing"
+                        currentBuild.result = 'UNSTABLE'
                     }
                 }
             }
