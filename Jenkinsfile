@@ -30,7 +30,7 @@ pipeline {
 
         stage('Unit Tests') {
             steps {
-                sh 'npm test -- --passWithNoTests'
+                sh 'npm test -- --passWithNoTests --forceExit'
             }
             post {
                 always {
