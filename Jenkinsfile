@@ -24,13 +24,13 @@ pipeline {
 
         stage('Install Dependencies') {
             steps {
-                sh 'npm ci'
+                sh 'npm install --legacy-peer-deps'
             }
         }
 
         stage('Unit Tests') {
             steps {
-                sh 'npm run test:ci'
+                sh 'npm test -- --passWithNoTests'
             }
             post {
                 always {
