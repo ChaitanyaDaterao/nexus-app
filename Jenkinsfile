@@ -42,7 +42,7 @@ pipeline {
         stage('SAST - SonarQube') {
             steps {
                 withSonarQubeEnv('SonarQube') {
-                    sh "${tool 'SonarScanner'}/bin/sonar-scanner -Dsonar.projectKey=${SONAR_PROJECT_KEY} -Dsonar.sources=src"
+                    sh returnStatus: true, script: "${tool 'SonarScanner'}/bin/sonar-scanner -Dsonar.projectKey=${SONAR_PROJECT_KEY} -Dsonar.sources=src"
                 }
             }
         }
