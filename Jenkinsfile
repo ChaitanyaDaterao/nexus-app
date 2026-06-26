@@ -51,7 +51,7 @@ pipeline {
             steps {
                 script {
                     try {
-                        timeout(time: 2, unit: 'MINUTES') {
+                        timeout(time: 5, unit: 'MINUTES') {
                             waitForQualityGate abortPipeline: false
                         }
                     } catch (err) {
@@ -64,10 +64,12 @@ pipeline {
 
         stage('SCA - Dependency Check') {
             steps {
-                dependencyCheck(
-                    additionalArguments: '--scan ./ --format XML --out ./dependency-check-report',
-                    odcInstallation: 'OWASP-DC'
-                )
+                withCredentials([string(credentialsId: 'nvd-api-key', variable: 'NVD_KEY')]) {
+                    dependencyCheck(
+                        additionalArguments: "--scan ./ --format XML --out ./dependency-check-report --nvdApiKey ${NVD_KEY}",
+                        odcInstallation: 'OWASP-DC'
+                    )
+                }
             }
             post {
                 always {
