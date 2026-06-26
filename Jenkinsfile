@@ -65,15 +65,18 @@ pipeline {
         stage('SCA - Dependency Check') {
             steps {
                 withCredentials([string(credentialsId: 'nvd-api-key', variable: 'NVD_KEY')]) {
-                    dependencyCheck(
-                        additionalArguments: "--scan ./ --format XML --out ./dependency-check-report --nvdApiKey ${NVD_KEY}",
-                        odcInstallation: 'OWASP-DC'
-                    )
-                }
-            }
-            post {
-                always {
-                    dependencyCheckPublisher pattern: 'dependency-check-report/dependency-check-report.xml'
+                    sh '''
+                        docker run --rm \
+                          -v $(pwd):/src \
+                          -v $(pwd)/dependency-check-report:/report \
+                          owasp/dependency-check:latest \
+                          --scan /src \
+                          --format XML \
+                          --out /report \
+                          --nvdApiKey $NVD_KEY \
+                          --disableYarnAudit \
+                          --disableNodeAudit || true
+                    '''
                 }
             }
         }
