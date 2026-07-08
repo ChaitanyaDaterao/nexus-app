@@ -1,0 +1,6 @@
+build/
+coverage/
+.env
+*.pem
+*.key
+.git

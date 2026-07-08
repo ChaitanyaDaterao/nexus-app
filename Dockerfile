@@ -1,14 +1,13 @@
-# Stage 1: Install dependencies
+# Stage 1: Dependencies (copy from host)
 FROM node:20-alpine AS deps
 WORKDIR /app
 COPY package*.json ./
-RUN npm install --only=production --legacy-peer-deps
+COPY node_modules ./node_modules
 
 # Stage 2: Build React frontend
 FROM node:20-alpine AS builder
 WORKDIR /app
-COPY package*.json ./
-RUN npm install --legacy-peer-deps
+COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 RUN npm run build
 
