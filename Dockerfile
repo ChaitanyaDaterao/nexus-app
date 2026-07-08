@@ -1,18 +1,4 @@
-# Stage 1: Dependencies (copy from host)
-FROM node:20-alpine AS deps
-WORKDIR /app
-COPY package*.json ./
-COPY node_modules ./node_modules
-
-# Stage 2: Build React frontend
-FROM node:20-alpine AS builder
-WORKDIR /app
-COPY --from=deps /app/node_modules ./node_modules
-COPY . .
-RUN npm run build
-
-# Stage 3: Production runtime
-FROM node:20-alpine AS runner
+FROM node:20-alpine
 WORKDIR /app
 
 RUN apk add --no-cache dumb-init
@@ -20,10 +6,10 @@ RUN apk add --no-cache dumb-init
 RUN addgroup -g 1001 -S appgroup && \
     adduser -u 1001 -S appuser -G appgroup
 
-COPY --from=deps /app/node_modules ./node_modules
-COPY --from=builder /app/build ./build
-COPY --from=builder /app/src/server ./src/server
 COPY package*.json ./
+COPY node_modules ./node_modules
+COPY src/server ./src/server
+COPY public ./public
 
 USER appuser
 
