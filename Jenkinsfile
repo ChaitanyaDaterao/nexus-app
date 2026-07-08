@@ -88,7 +88,6 @@ pipeline {
                       -v $(pwd):/path \
                       zricethezav/gitleaks:latest \
                       detect --source /path \
-                      --config /path/.gitleaks.toml \
                       --exit-code 1
                 '''
             }
