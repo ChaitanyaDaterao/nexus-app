@@ -126,6 +126,8 @@ pipeline {
                         mkdir -p /var/jenkins_home/.docker
                         ECR_PASSWORD=$(/usr/local/bin/aws ecr get-login-password --region ${AWS_REGION})
                         echo $ECR_PASSWORD | docker --config /var/jenkins_home/.docker login --username AWS --password-stdin ${ECR_REGISTRY}
+                        sleep 5
+                        cat /var/jenkins_home/.docker/config.json
                         docker --config /var/jenkins_home/.docker push ${ECR_REGISTRY}/${ECR_REPO}:${IMAGE_TAG}
                     '''
                 }
