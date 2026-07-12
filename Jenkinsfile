@@ -123,8 +123,8 @@ pipeline {
                     secretKeyVariable: 'AWS_SECRET_ACCESS_KEY'
                 ]]) {
                     sh '''
-                        /usr/local/bin/aws ecr get-login-password --region ${AWS_REGION} | \
-                        docker login --username AWS --password-stdin ${ECR_REGISTRY}
+                        ECR_PASSWORD=$(/usr/local/bin/aws ecr get-login-password --region ${AWS_REGION})
+                        echo $ECR_PASSWORD | docker login --username AWS --password-stdin ${ECR_REGISTRY}
                         docker push ${ECR_REGISTRY}/${ECR_REPO}:${IMAGE_TAG}
                     '''
                 }
