@@ -84,12 +84,9 @@ pipeline {
         stage('Secret Scan - Gitleaks') {
             steps {
                 sh '''
-                    if ! command -v gitleaks &> /dev/null; then
-                        curl -sSL https://github.com/gitleaks/gitleaks/releases/download/v8.18.4/gitleaks_8.18.4_linux_x64.tar.gz -o /tmp/gitleaks.tar.gz
-                        tar -xzf /tmp/gitleaks.tar.gz -C /tmp
-                        mv /tmp/gitleaks /usr/local/bin/gitleaks
-                    fi
-                    gitleaks detect --source . --exit-code 1 || true
+                    curl -sSL https://github.com/gitleaks/gitleaks/releases/download/v8.18.4/gitleaks_8.18.4_linux_x64.tar.gz -o /tmp/gitleaks.tar.gz
+                    tar -xzf /tmp/gitleaks.tar.gz -C /tmp
+                    /tmp/gitleaks detect --source . --exit-code 1 || true
                 '''
             }
         }
