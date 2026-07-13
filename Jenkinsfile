@@ -132,7 +132,7 @@ pipeline {
         stage('Update Config Repo') {
             steps {
                 withCredentials([sshUserPrivateKey(
-                    credentialsId: 'github-token',
+                    credentialsId: 'github-ssh',
                     keyVariable: 'SSH_KEY'
                 )]) {
                     sh '''
