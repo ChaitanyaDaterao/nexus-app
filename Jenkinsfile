@@ -131,24 +131,20 @@ pipeline {
 
         stage('Update Config Repo') {
             steps {
-                withCredentials([sshUserPrivateKey(
-                    credentialsId: 'github-ssh',
-                    keyVariable: 'SSH_KEY'
-                )]) {
-                    sh '''
-                        git config --global user.email "jenkins@nexus.com"
-                        git config --global user.name "Jenkins CI"
-                        git clone ${CONFIG_REPO} config-repo
-                        cd config-repo
-                        sed -i "s|tag:.*|tag: ${IMAGE_TAG}|g" charts/nexus-app/values/dev.yaml
-                        git add .
-                        git commit -m "ci: update image tag to ${IMAGE_TAG}"
-                        git push origin main
-                    '''
-                }
+                sh '''
+                    git config --global user.email "jenkins@nexus.com"
+                    git config --global user.name "Jenkins CI"
+                    git config --global core.sshCommand "ssh -i /var/jenkins_home/.ssh/id_ed25519 -o StrictHostKeyChecking=no"
+                    rm -rf config-repo
+                    git clone ${CONFIG_REPO} config-repo
+                    cd config-repo
+                    sed -i "s|tag:.*|tag: ${IMAGE_TAG}|g" charts/nexus-app/values/dev.yaml
+                    git add .
+                    git commit -m "ci: update image tag to ${IMAGE_TAG}"
+                    git push origin main
+                '''
             }
-        }
-    }
+        }    }
 
     post {
         success {
